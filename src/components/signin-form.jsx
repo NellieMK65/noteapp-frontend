@@ -22,6 +22,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
 
 const schema = z.object({
 	full_name: z
@@ -69,7 +70,7 @@ export function SignInForm({ className, ...props }) {
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Welcome to Noteapp</CardTitle>
+					<CardTitle className="text-xl">Welcome to Notted</CardTitle>
 					<CardDescription>Create Account</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -144,9 +145,9 @@ export function SignInForm({ className, ...props }) {
 								</div>
 								<div className="text-center text-sm">
 									Don&apos;t have an account?{" "}
-									<a href="#" className="underline underline-offset-4">
+									<Link to="/login" className="underline underline-offset-4">
 										Login
-									</a>
+									</Link>
 								</div>
 							</div>
 						</form>
