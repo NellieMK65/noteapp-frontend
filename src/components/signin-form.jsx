@@ -1,3 +1,4 @@
+import { Loader2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,9 +38,31 @@ export function SignInForm({ className, ...props }) {
 		resolver: zodResolver(schema),
 	});
 
-	const onSubmit = (values) => {
+	const onSubmit = async (values) => {
 		// make a fetch request to the backed
-		console.log(values);
+		// const myHeaders = new Headers();
+		// myHeaders.append("Content-Type", "application/json");
+
+		const raw = JSON.stringify(values);
+
+		const requestOptions = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			},
+			body: raw,
+		};
+
+		await fetch("http://127.0.0.1:5555/signin", requestOptions)
+			.then((response) => response.json())
+			.then((result) => {
+				// 1. display success message
+				// 2. clear form
+				// 3. store user session
+				// 4. redirect user home/dashboard
+			})
+			.catch((error) => console.log("error", error));
 	};
 
 	return (
@@ -105,8 +128,18 @@ export function SignInForm({ className, ...props }) {
 										</div>
 										<Input id="password" type="password" />
 									</div>
-									<Button type="submit" className="w-full hover:cursor-pointer">
-										SignIn
+									<Button
+										disabled={form.formState.isSubmitting}
+										type="submit"
+										className="w-full hover:cursor-pointer"
+									>
+										{form.formState.isSubmitting ? (
+											<>
+												<Loader2Icon /> Signin...{" "}
+											</>
+										) : (
+											"SignIn"
+										)}
 									</Button>
 								</div>
 								<div className="text-center text-sm">
