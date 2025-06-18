@@ -22,7 +22,9 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "@/utils";
+import toast from "react-hot-toast";
 
 const schema = z.object({
 	full_name: z
@@ -31,10 +33,14 @@ const schema = z.object({
 	email: z
 		.string({ required_error: "Email address is required" })
 		.email({ message: "Enter a valid email address" }),
-	password: z.string().optional(), //come back to this later on
+	password: z
+		.string({ required_error: "Password is required" })
+		.min(3, { message: "Password cannot be less than 3 characters" }),
 });
 
 export function SignInForm({ className, ...props }) {
+	const navigate = useNavigate();
+
 	const form = useForm({
 		resolver: zodResolver(schema),
 	});
@@ -55,13 +61,27 @@ export function SignInForm({ className, ...props }) {
 			body: raw,
 		};
 
-		await fetch("http://127.0.0.1:5555/signin", requestOptions)
+		await fetch(`${BASE_URL}/signin`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
-				// 1. display success message
-				// 2. clear form
-				// 3. store user session
-				// 4. redirect user home/dashboard
+				// the user is only available if the process was successfull
+				if (result.user) {
+					// 1. display success message
+					toast.success(result.message);
+					// 2. clear form
+					form.reset();
+					// 3. store user session
+					localStorage.setItem("session", result.access_token);
+					// 4. redirect user home/dashboard
+					navigate("/");
+				} else {
+					const message =
+						typeof result.message === "object"
+							? Object.values(result.message)[0]
+							: result.message;
+
+					toast.error(message);
+				}
 			})
 			.catch((error) => console.log("error", error));
 	};
@@ -117,18 +137,30 @@ export function SignInForm({ className, ...props }) {
 										)}
 									/>
 
-									<div className="grid gap-3">
-										<div className="flex items-center">
-											<Label htmlFor="password">Password</Label>
-											<a
-												href="#"
-												className="ml-auto text-sm underline-offset-4 hover:underline"
-											>
-												Forgot your password?
-											</a>
-										</div>
-										<Input id="password" type="password" />
-									</div>
+									<FormField
+										control={form.control}
+										name="password"
+										render={({ field }) => (
+											<FormItem>
+												<div className="flex items-center">
+													<FormLabel>Password</FormLabel>
+
+													<a
+														href="#"
+														className="ml-auto text-sm underline-offset-4 hover:underline"
+													>
+														Forgot your password?
+													</a>
+												</div>
+												<FormControl>
+													<Input type="password" {...field} />
+												</FormControl>
+												{/* This will display errors if any */}
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+
 									<Button
 										disabled={form.formState.isSubmitting}
 										type="submit"
