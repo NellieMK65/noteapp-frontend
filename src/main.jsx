@@ -6,10 +6,12 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 
 import { MainLayout } from "./components/layout/layout";
+import { DashboardLayout } from "./components/layout/dashboard";
 
 import LoginPage from "./pages/login";
 import SignInPage from "./pages/signup";
 import HomePage from "./pages/home";
+import NotesPage from "./pages/notes";
 
 const routes = createBrowserRouter([
 	{
@@ -27,6 +29,22 @@ const routes = createBrowserRouter([
 	{
 		path: "/signin",
 		element: <SignInPage />,
+	},
+	{
+		path: "/notes",
+		element: (
+			<DashboardLayout>
+				<NotesPage />
+			</DashboardLayout>
+		),
+	},
+	{
+		path: "/account",
+		element: (
+			<DashboardLayout>
+				<>Account page</>
+			</DashboardLayout>
+		),
 	},
 ]);
 
