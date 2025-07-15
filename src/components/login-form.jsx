@@ -59,7 +59,8 @@ export function LoginForm({ className, ...props }) {
 					// 3. store user session
 					localStorage.setItem("session", result.access_token);
 					// 4. redirect user /notes
-					navigate("/notes");
+					// check for user role then navigate them to the correct page
+					navigate(result.user.role === "admin" ? "/admin" : "/notes");
 				} else {
 					const message =
 						typeof result.message === "object"

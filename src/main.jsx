@@ -12,6 +12,8 @@ import LoginPage from "./pages/login";
 import SignInPage from "./pages/signup";
 import HomePage from "./pages/home";
 import NotesPage from "./pages/notes";
+import { AdminLayout } from "./components/layout/admin-layout";
+import AdminPage from "./pages/admin";
 
 const routes = createBrowserRouter([
 	{
@@ -44,6 +46,14 @@ const routes = createBrowserRouter([
 			<DashboardLayout>
 				<>Account page</>
 			</DashboardLayout>
+		),
+	},
+	{
+		path: "/admin",
+		element: (
+			<AdminLayout>
+				<AdminPage />
+			</AdminLayout>
 		),
 	},
 ]);
